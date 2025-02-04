@@ -1,9 +1,7 @@
 import 'package:hive/hive.dart';
+part 'user_prefrence_model.g.dart';
 
-// Declare the part file for the generated adapter
-part 'user_prefrence_model.g.dart'; // This will be generated
-
-@HiveType(typeId: 0) // Unique typeId for this model
+@HiveType(typeId: 0)
 class UserPreferences {
   @HiveField(0)
   final bool isDarkMode;
@@ -11,35 +9,40 @@ class UserPreferences {
   @HiveField(1)
   final String sortOrder;
 
+  @HiveField(2)
+  final String defaultFilter;
+
   UserPreferences({
     this.isDarkMode = false,
-    this.sortOrder = 'date', // Default sort order
+    this.sortOrder = 'date ascending', // Default sort order
+    this.defaultFilter = 'all', // Default filter
   });
 
-  // Factory constructor for Hive deserialization
-  factory UserPreferences.fromMap(Map<String, dynamic> map) {
-    return UserPreferences(
-      isDarkMode: map['isDarkMode'] ?? false,
-      sortOrder: map['sortOrder'] ?? 'date',
-    );
-  }
-
-  // Convert to Map for Hive serialization
   Map<String, dynamic> toMap() {
     return {
       'isDarkMode': isDarkMode,
       'sortOrder': sortOrder,
+      'defaultFilter': defaultFilter,
     };
   }
 
-  // CopyWith Method
+  factory UserPreferences.fromMap(Map<String, dynamic> map) {
+    return UserPreferences(
+      isDarkMode: map['isDarkMode'] ?? false,
+      sortOrder: map['sortOrder'] ?? 'date ascending',
+      defaultFilter: map['defaultFilter'] ?? 'all',
+    );
+  }
+
   UserPreferences copyWith({
     bool? isDarkMode,
     String? sortOrder,
+    String? defaultFilter,
   }) {
     return UserPreferences(
       isDarkMode: isDarkMode ?? this.isDarkMode,
       sortOrder: sortOrder ?? this.sortOrder,
+      defaultFilter: defaultFilter ?? this.defaultFilter,
     );
   }
 }

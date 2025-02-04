@@ -19,17 +19,20 @@ class UserPreferencesAdapter extends TypeAdapter<UserPreferences> {
     return UserPreferences(
       isDarkMode: fields[0] as bool,
       sortOrder: fields[1] as String,
+      defaultFilter: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserPreferences obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.isDarkMode)
       ..writeByte(1)
-      ..write(obj.sortOrder);
+      ..write(obj.sortOrder)
+      ..writeByte(2)
+      ..write(obj.defaultFilter);
   }
 
   @override
