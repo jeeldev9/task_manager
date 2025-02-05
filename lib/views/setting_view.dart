@@ -13,6 +13,7 @@ class SettingsScreen extends ConsumerWidget {
     // Watch user preferences
     final userPreferences = ref.watch(userPreferencesProvider);
 
+    print("${userPreferences.sortOrder}");
     return Scaffold(
       appBar: AppBar(
         title: Text(

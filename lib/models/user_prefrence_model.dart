@@ -14,7 +14,7 @@ class UserPreferences {
 
   UserPreferences({
     this.isDarkMode = false,
-    this.sortOrder = 'date ascending', // Default sort order
+    this.sortOrder = 'Date (Ascending)', // Default sort order
     this.defaultFilter = 'all', // Default filter
   });
 
@@ -29,7 +29,7 @@ class UserPreferences {
   factory UserPreferences.fromMap(Map<String, dynamic> map) {
     return UserPreferences(
       isDarkMode: map['isDarkMode'] ?? false,
-      sortOrder: map['sortOrder'] ?? 'date ascending',
+      sortOrder: map['sortOrder'] ?? 'Date (Ascending)',
       defaultFilter: map['defaultFilter'] ?? 'all',
     );
   }
