@@ -213,7 +213,10 @@ class TaskListScreen extends ConsumerWidget {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text('Delete Task'),
+                      title: Text(
+                        'Delete Task',
+                        style: TextStyle(color: Colors.black),
+                      ),
                       content:
                           Text('Are you sure you want to delete this task?'),
                       actions: [
