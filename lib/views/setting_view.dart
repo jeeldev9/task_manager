@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:task_manager/views/task_list_view.dart';
 import '../view_model/user_preferences_view_model.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -111,22 +112,17 @@ class SettingsScreen extends ConsumerWidget {
               ),
               trailing: DropdownButton<String>(
                 value: userPreferences.sortOrder ??
-                    'date ascending', // Ensure a default value
+                    "all", // Map sortOrder to label
                 onChanged: (value) {
                   ref
                       .read(userPreferencesProvider.notifier)
-                      .setSortOrder(value!);
+                      .setSortOrder(value ?? "");
                 },
-                items: [
-                  'date ascending',
-                  'date descending',
-                  'priority',
-                  'status'
-                ].map((option) {
+                items: TaskSort.values.map((option) {
                   return DropdownMenuItem<String>(
-                    value: option, // Use the raw value
+                    value: _getSortLabel(option), // Use the label for display
                     child: Text(
-                      option.capitalize(), // Display capitalized text
+                      _getSortLabel(option),
                       style: TextStyle(color: theme.colorScheme.onBackground),
                     ),
                   );
@@ -157,22 +153,22 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               trailing: DropdownButton<String>(
-                value: userPreferences.defaultFilter ??
-                    'all', // Ensure a default value
+                value: userPreferences.defaultFilter ?? "all",
+
+                items: TaskFilter.values.map((option) {
+                  return DropdownMenuItem<String>(
+                    value: option.name, // Use the raw value
+                    child: Text(
+                      option.name.capitalize(), // Display capitalized text
+                      style: TextStyle(color: theme.colorScheme.onBackground),
+                    ),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   ref
                       .read(userPreferencesProvider.notifier)
                       .setDefaultFilter(value!);
                 },
-                items: ['all', 'completed', 'pending'].map((option) {
-                  return DropdownMenuItem<String>(
-                    value: option, // Use the raw value
-                    child: Text(
-                      option.capitalize(), // Display capitalized text
-                      style: TextStyle(color: theme.colorScheme.onBackground),
-                    ),
-                  );
-                }).toList(),
                 underline: SizedBox(), // Remove underline
                 icon: Icon(
                   Icons.arrow_drop_down,
@@ -187,6 +183,34 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+
+  // Helper method to get sort label
+  String _getSortLabel(TaskSort sort) {
+    switch (sort) {
+      case TaskSort.dateAsc:
+        return 'Date (Ascending)';
+      case TaskSort.dateDesc:
+        return 'Date (Descending)';
+      case TaskSort.priority:
+        return 'Priority';
+      case TaskSort.status:
+        return 'Status';
+    }
+  }
+
+  // Helper method to map TaskSort to label
+  String _mapSortToLabel(String? sortOrder) {
+    if (sortOrder == null) {
+      return _getSortLabel(TaskSort.dateAsc); // Default value
+    }
+    final sort = TaskSort.values.firstWhere(
+      (e) => e.name == sortOrder,
+      orElse: () => TaskSort.dateAsc,
+    );
+    return _getSortLabel(sort);
+  }
+
+  // Helper method to map label to TaskSort
 }
 
 // Extension to capitalize strings

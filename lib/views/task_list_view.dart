@@ -25,6 +25,8 @@ class TaskListScreen extends ConsumerWidget {
       (previous, next) {
         ref.read(taskFilterProvider.notifier).state =
             _mapDefaultFilterToTaskFilter(next.defaultFilter);
+        ref.read(taskSortProvider.notifier).state =
+            _mapLabelToSort(next.sortOrder);
       },
     );
 
@@ -306,6 +308,7 @@ class TaskListScreen extends ConsumerWidget {
                     selected: isSelected,
                     onSelected: (selected) {
                       ref.read(taskSortProvider.notifier).state = sort;
+                      print(sort.name);
                       Navigator.pop(context);
                     },
                     selectedColor: theme.primaryColor.withOpacity(0.2),
@@ -317,6 +320,21 @@ class TaskListScreen extends ConsumerWidget {
         );
       },
     );
+  }
+
+  TaskSort _mapLabelToSort(String label) {
+    switch (label) {
+      case 'Date (Ascending)':
+        return TaskSort.dateAsc;
+      case 'Date (Descending)':
+        return TaskSort.dateDesc;
+      case 'Priority':
+        return TaskSort.priority;
+      case 'Status':
+        return TaskSort.status;
+      default:
+        return TaskSort.dateAsc; // Default value
+    }
   }
 
   // Helper method to map defaultFilter to TaskFilter
@@ -389,5 +407,37 @@ class TaskListScreen extends ConsumerWidget {
 }
 
 // Riverpod providers for managing filter and sort states
-final taskFilterProvider = StateProvider((ref) => TaskFilter.all);
-final taskSortProvider = StateProvider((ref) => TaskSort.dateAsc);
+final taskFilterProvider = StateProvider((ref) => _mapDefaultFilterToTaskFilter(
+    ref.watch(userPreferencesProvider).defaultFilter));
+final taskSortProvider = StateProvider((ref) =>
+    _mapDefaultSortToTaskSort(ref.watch(userPreferencesProvider).sortOrder));
+
+// Helper method to map defaultFilter to TaskFilter
+TaskFilter _mapDefaultFilterToTaskFilter(String defaultFilter) {
+  switch (defaultFilter) {
+    case 'all':
+      return TaskFilter.all;
+    case 'completed':
+      return TaskFilter.completed;
+    case 'pending':
+      return TaskFilter.pending;
+    default:
+      return TaskFilter.all; // Default to 'All' if no match
+  }
+}
+
+// Helper method to map sortOrder to TaskSort
+TaskSort _mapDefaultSortToTaskSort(String sortOrder) {
+  switch (sortOrder) {
+    case 'Date (Ascending)':
+      return TaskSort.dateAsc;
+    case 'Date (Descending)':
+      return TaskSort.dateDesc;
+    case 'Priority':
+      return TaskSort.priority;
+    case 'Status':
+      return TaskSort.status;
+    default:
+      return TaskSort.dateAsc; // Default to 'Date Ascending' if no match
+  }
+}
